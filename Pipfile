@@ -1,0 +1,10 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+cython = "0.29.30"
+
+[dev-packages]
+pytest = "7.1.2"

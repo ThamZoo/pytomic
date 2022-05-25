@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Cython
+pytomic/*.html
+pytomic/*.c
+pytomic/*.cpp
+pytomic/*.so
