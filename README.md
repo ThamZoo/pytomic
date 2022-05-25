@@ -28,6 +28,10 @@ Basically, imported classes `Atomic[Int | UInt | IntUnsafe | UIntUnsafe]` have t
  - `postinc() -> int`: same as `atomic++` in C++
  - `predec() -> int`: same as `--atomic` in C++
  - `postdec() -> int`: same as `atomic++` in C++
+ - `store_relaxed(val: int) -> None`: `store` with `memory_order_relaxed`
+ - `load_relaxed() -> int`: `load` with `memory_order_relaxed`
+ - `compare_exchange_weak(expected: int, desired: int) -> bool`: same as `compare_exchange_weak(T&, T)` in C++
+ - `compare_exchange_strong(expected: int, desired: int) -> bool`: same as `compare_exchange_strong(T&, T)` in C++
 
 ## Example code:
 ```python
@@ -84,7 +88,7 @@ atomic_unsafe_inc solution | num_procs = 4 | inc_count = 100,000 | repeat = 5 | 
 
 # Limitations and caveats
  - Currently, the library only provides atomicity for `int` type in Python. Support for `float`, `bool`, `char` can be added later.
- - Operations like `compare_and_exchange` or `wait`, `notify` haven't ported to Python yet.
+ - Operations like `wait`, `notify` haven't ported to Python yet.
 
 # Developer guide
 ## Project structure

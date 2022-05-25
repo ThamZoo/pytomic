@@ -11,13 +11,14 @@ extensions = make_ext("pytomic", "__init__", "cpp_limits", "multithreading", "mu
 
 setup(
     name='pytomic',
-    version="0.1.0",
+    version="0.2.0",
     packages=['pytomic'],
+    package_dir={"pytomic": "pytomic"},
     ext_modules = cythonize(
         extensions, 
-        language_level="3", 
-        annotate=True, 
-        # force=True,
+        language_level="3",
         ),
-    zip_safe=False,
+    package_data={
+        "pytomic": ["*.pyi", "py.typed"]
+    }
 )

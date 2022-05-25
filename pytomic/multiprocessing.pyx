@@ -11,7 +11,7 @@ from cython.operator cimport (
     dereference as deref
 )
 
-from .cpp_atomic cimport atomic
+from .cpp_atomic cimport atomic, memory_order_relaxed
 
 from multiprocessing.managers import SharedMemoryManager
 
@@ -36,9 +36,15 @@ cdef class AtomicInt:
 
     cpdef int64_t load(self):
         return deref(self.val).load()
+
+    cpdef int64_t load_relaxed(self):
+        return deref(self.val).load(memory_order_relaxed)
     
     cpdef void store(self, int64_t val):
         deref(self.val).store(val)
+
+    cpdef void store_relaxed(self, int64_t val):
+        deref(self.val).store(val, memory_order_relaxed)
 
     cpdef int64_t preinc(self) except *:
         if self.load() > INT64_MAX - 1:
@@ -59,6 +65,12 @@ cdef class AtomicInt:
         if self.load() < INT64_MIN + 1:
             raise OverflowError()
         return postdec(deref(self.val))
+
+    cpdef bint compare_exchange_strong(self, int64_t expected, int64_t desired):
+        return deref(self.val).compare_exchange_strong(expected, desired)
+
+    cpdef bint compare_exchange_weak(self, int64_t expected, int64_t desired):
+        return deref(self.val).compare_exchange_weak(expected, desired)
 
     def __del__(self):
         if self.shm_manager:
@@ -86,9 +98,15 @@ cdef class AtomicUInt:
 
     cpdef uint64_t load(self):
         return deref(self.val).load()
+
+    cpdef uint64_t load_relaxed(self):
+        return deref(self.val).load(memory_order_relaxed)
     
     cpdef void store(self, uint64_t val):
         deref(self.val).store(val)
+
+    cpdef void store_relaxed(self, uint64_t val):
+        deref(self.val).store(val, memory_order_relaxed)
 
     cpdef uint64_t preinc(self) except *:
         if self.load() > UINT64_MAX - 1:
@@ -109,6 +127,12 @@ cdef class AtomicUInt:
         if self.load() < 1:
             raise OverflowError()
         return postdec(deref(self.val))
+
+    cpdef bint compare_exchange_strong(self, uint64_t expected, uint64_t desired):
+        return deref(self.val).compare_exchange_strong(expected, desired)
+
+    cpdef bint compare_exchange_weak(self, uint64_t expected, uint64_t desired):
+        return deref(self.val).compare_exchange_weak(expected, desired)
 
     def __del__(self):
         if self.shm_manager:
@@ -135,9 +159,15 @@ cdef class AtomicIntUnsafe:
 
     cpdef int64_t load(self):
         return deref(self.val).load()
+
+    cpdef int64_t load_relaxed(self):
+        return deref(self.val).load(memory_order_relaxed)
     
     cpdef void store(self, int64_t val):
         deref(self.val).store(val)
+
+    cpdef void store_relaxed(self, int64_t val):
+        deref(self.val).store(val, memory_order_relaxed)
 
     cpdef int64_t preinc(self):
         return preinc(deref(self.val))
@@ -150,6 +180,12 @@ cdef class AtomicIntUnsafe:
     
     cpdef int64_t postdec(self):
         return postdec(deref(self.val))
+
+    cpdef bint compare_exchange_strong(self, int64_t expected, int64_t desired):
+        return deref(self.val).compare_exchange_strong(expected, desired)
+
+    cpdef bint compare_exchange_weak(self, int64_t expected, int64_t desired):
+        return deref(self.val).compare_exchange_weak(expected, desired)
 
     def __del__(self):
         if self.shm_manager:
@@ -176,9 +212,15 @@ cdef class AtomicUIntUnsafe:
 
     cpdef uint64_t load(self):
         return deref(self.val).load()
+
+    cpdef uint64_t load_relaxed(self):
+        return deref(self.val).load(memory_order_relaxed)
     
     cpdef void store(self, uint64_t val):
         deref(self.val).store(val)
+
+    cpdef void store_relaxed(self, uint64_t val):
+        deref(self.val).store(val, memory_order_relaxed)
 
     cpdef uint64_t preinc(self):
         return preinc(deref(self.val))
@@ -191,6 +233,12 @@ cdef class AtomicUIntUnsafe:
     
     cpdef uint64_t postdec(self):
         return postdec(deref(self.val))
+
+    cpdef bint compare_exchange_strong(self, uint64_t expected, uint64_t desired):
+        return deref(self.val).compare_exchange_strong(expected, desired)
+
+    cpdef bint compare_exchange_weak(self, uint64_t expected, uint64_t desired):
+        return deref(self.val).compare_exchange_weak(expected, desired)
 
     def __del__(self):
         if self.shm_manager:
