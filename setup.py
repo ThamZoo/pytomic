@@ -20,6 +20,7 @@ setup(
         language_level="3",
         ),
     package_data={
-        "pytomic": ["*.pyi", "py.typed"]
-    }
+        "pytomic": ["*.pyi", "py.typed", "*.pyx", "*.pxd"]
+    },
+    zip_safe=False
 )
