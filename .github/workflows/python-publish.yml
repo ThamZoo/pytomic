@@ -31,10 +31,12 @@ jobs:
       run: |
         /opt/python/cp39-cp39/bin/python -m pip install build twine
     - name: Build package
-      run: /opt/python/cp39-cp39/bin/python -m build --sdist --wheel
-    - name: Publish package
       run: |
-        /opt/python/cp39-cp39/bin/python -m twine upload dist/*.tar.gz wheelhouse/*
-      with:
-        user: __token__
-        password: ${{ secrets.PYPI_API_TOKEN }}
+        /opt/python/cp39-cp39/bin/python -m build --sdist --wheel
+        auditwheel repair --plat manylinux2010_x86_64 dist/*.whl
+    - name: Publish package
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+      run: |
+        /opt/python/cp39-cp39/bin/python -m twine upload dist/*.tar.gz wheelhouse/*.whl
