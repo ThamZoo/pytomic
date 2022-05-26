@@ -29,10 +29,9 @@ jobs:
         python-version: '3.9'
     - name: Install dependencies
       run: |
-        python3.9 -m pip install --upgrade pip
-        pip install build twine
+        /opt/python/cp39-cp39m/bin/python -m pip install build twine
     - name: Build package
-      run: python3.9 -m build --sdist --wheel
+      run: /opt/python/cp39-cp39m/bin/python -m build --sdist --wheel
     - name: Publish package
       uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
       with:
