@@ -11,6 +11,7 @@ extensions = make_ext("pytomic", "__init__", "cpp_limits", "multithreading", "mu
 
 setup(
     name='pytomic',
+    long_description="A thin wrapper of C++ `std::atomic` library for Python",
     version="0.2.1",
     packages=['pytomic'],
     package_dir={"pytomic": "pytomic"},
