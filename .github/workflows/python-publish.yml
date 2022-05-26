@@ -18,7 +18,7 @@ permissions:
 jobs:
   deploy:
     container: 
-      image: quay.io/pypa/manylinux2014_x86_64 
+      image: quay.io/pypa/manylinux2010_x86_64
     runs-on: ubuntu-latest
 
     steps:
@@ -29,11 +29,12 @@ jobs:
         python-version: '3.9'
     - name: Install dependencies
       run: |
-        /opt/python/cp39-cp39m/bin/python -m pip install build twine
+        /opt/python/cp39-cp39/bin/python -m pip install build twine
     - name: Build package
-      run: /opt/python/cp39-cp39m/bin/python -m build --sdist --wheel
+      run: /opt/python/cp39-cp39/bin/python -m build --sdist --wheel
     - name: Publish package
-      uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
+      run: |
+        /opt/python/cp39-cp39/bin/python -m twine upload dist/*.tar.gz wheelhouse/*
       with:
         user: __token__
         password: ${{ secrets.PYPI_API_TOKEN }}
