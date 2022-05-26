@@ -11,7 +11,7 @@ extensions = make_ext("pytomic", "__init__", "cpp_limits", "multithreading", "mu
 
 setup(
     name='pytomic',
-    version="0.2.0",
+    version="0.2.1",
     packages=['pytomic'],
     package_dir={"pytomic": "pytomic"},
     ext_modules = cythonize(

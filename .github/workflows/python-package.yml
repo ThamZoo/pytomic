@@ -30,4 +30,5 @@ jobs:
         python -m pipenv install --dev --system
     - name: Test with pytest
       run: |
+        python setup.py build_ext -i
         pytest
