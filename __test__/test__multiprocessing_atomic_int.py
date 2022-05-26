@@ -88,13 +88,14 @@ def test_atomic_int_out_of_upper_bound_store():
     assert atomic_int.load() == C_MAX_INT
 
 def test_atomic_with_multi_processing():
-    atomic_int = AtomicInt(0)
+    atomic_int1 = AtomicInt(0)
+    atomic_int2 = AtomicInt(0)
     INC_NUM = int(1e6)
     NUM_PROC = 6
 
     def inc():
         for i in range(INC_NUM):
-            atomic_int.preinc()
+            atomic_int1.preinc()
     
     procs = []
     for i in range(NUM_PROC):
@@ -103,4 +104,5 @@ def test_atomic_with_multi_processing():
         procs.append(p)
     for p in procs:
         p.join()
-    assert atomic_int.load() == INC_NUM * NUM_PROC
+    assert atomic_int1.load() == INC_NUM * NUM_PROC
+    assert atomic_int2.load() == 0

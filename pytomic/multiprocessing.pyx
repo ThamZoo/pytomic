@@ -13,26 +13,20 @@ from cython.operator cimport (
 
 from .cpp_atomic cimport atomic, memory_order_relaxed
 
-from multiprocessing.managers import SharedMemoryManager
+from multiprocessing.sharedctypes import RawValue
+from ctypes import c_uint64, c_int64, addressof
 
 cdef class AtomicInt:
     cdef atomic[int64_t] *val
-    cdef public object shm_manager
-    cdef public object shm
+    cdef public object raw_val
     
     def __cinit__(self, init_val, memory_view=None):
         if init_val > INT64_MAX or init_val < INT64_MIN:
             raise OverflowError()
-        self.shm_manager = None
-
-        if not memory_view:
-            self.shm_manager = SharedMemoryManager()
-            self.shm_manager.start()
-            self.shm = self.shm_manager.SharedMemory(size=sizeof(int64_t))
         
-        cdef unsigned char[:] mem_view = memory_view or self.shm.buf
-        self.val = <atomic[int64_t]*> &mem_view[0]
-        deref(self.val).store(init_val)
+        self.raw_val = RawValue(c_int64, init_val)
+        cdef size_t ptr = addressof(self.raw_val)
+        self.val = <atomic[int64_t]*> ptr
 
     cpdef int64_t load(self):
         return deref(self.val).load()
@@ -72,29 +66,17 @@ cdef class AtomicInt:
     cpdef bint compare_exchange_weak(self, int64_t expected, int64_t desired):
         return deref(self.val).compare_exchange_weak(expected, desired)
 
-    def __del__(self):
-        if self.shm_manager:
-            self.shm_manager.shutdown()
-
-
 cdef class AtomicUInt:
     cdef atomic[uint64_t] *val
-    cdef public object shm_manager
-    cdef public object shm
+    cdef public object raw_val
     
     def __cinit__(self, init_val, memory_view=None):
         if init_val > UINT64_MAX or init_val < 0:
             raise OverflowError()
-        self.shm_manager = None
-
-        if not memory_view:
-            self.shm_manager = SharedMemoryManager()
-            self.shm_manager.start()
-            self.shm = self.shm_manager.SharedMemory(size=sizeof(int64_t))
         
-        cdef unsigned char[:] mem_view = memory_view or self.shm.buf
-        self.val = <atomic[uint64_t]*> &mem_view[0]
-        deref(self.val).store(init_val)
+        self.raw_val = RawValue(c_uint64, init_val)
+        cdef size_t ptr = addressof(self.raw_val)
+        self.val = <atomic[uint64_t]*> ptr
 
     cpdef uint64_t load(self):
         return deref(self.val).load()
@@ -134,28 +116,17 @@ cdef class AtomicUInt:
     cpdef bint compare_exchange_weak(self, uint64_t expected, uint64_t desired):
         return deref(self.val).compare_exchange_weak(expected, desired)
 
-    def __del__(self):
-        if self.shm_manager:
-            self.shm_manager.shutdown()
-
 cdef class AtomicIntUnsafe:
     cdef atomic[int64_t] *val
-    cdef public object shm_manager
-    cdef public object shm
+    cdef public object raw_val
     
     def __cinit__(self, init_val, memory_view=None):
         if init_val > INT64_MAX or init_val < INT64_MIN:
             raise OverflowError()
-        self.shm_manager = None
-
-        if not memory_view:
-            self.shm_manager = SharedMemoryManager()
-            self.shm_manager.start()
-            self.shm = self.shm_manager.SharedMemory(size=sizeof(int64_t))
         
-        cdef unsigned char[:] mem_view = memory_view or self.shm.buf
-        self.val = <atomic[int64_t]*> &mem_view[0]
-        deref(self.val).store(init_val)
+        self.raw_val = RawValue(c_int64, init_val)
+        cdef size_t ptr = addressof(self.raw_val)
+        self.val = <atomic[int64_t]*> ptr
 
     cpdef int64_t load(self):
         return deref(self.val).load()
@@ -187,28 +158,17 @@ cdef class AtomicIntUnsafe:
     cpdef bint compare_exchange_weak(self, int64_t expected, int64_t desired):
         return deref(self.val).compare_exchange_weak(expected, desired)
 
-    def __del__(self):
-        if self.shm_manager:
-            self.shm_manager.shutdown()
-
 cdef class AtomicUIntUnsafe:
     cdef atomic[uint64_t] *val
-    cdef public object shm_manager
-    cdef public object shm
+    cdef public object raw_val
     
     def __cinit__(self, init_val, memory_view=None):
         if init_val > UINT64_MAX or init_val < 0:
             raise OverflowError()
-        self.shm_manager = None
-
-        if not memory_view:
-            self.shm_manager = SharedMemoryManager()
-            self.shm_manager.start()
-            self.shm = self.shm_manager.SharedMemory(size=sizeof(int64_t))
         
-        cdef unsigned char[:] mem_view = memory_view or self.shm.buf
-        self.val = <atomic[uint64_t]*> &mem_view[0]
-        deref(self.val).store(init_val)
+        self.raw_val = RawValue(c_uint64, init_val)
+        cdef size_t ptr = addressof(self.raw_val)
+        self.val = <atomic[uint64_t]*> ptr
 
     cpdef uint64_t load(self):
         return deref(self.val).load()
@@ -239,7 +199,3 @@ cdef class AtomicUIntUnsafe:
 
     cpdef bint compare_exchange_weak(self, uint64_t expected, uint64_t desired):
         return deref(self.val).compare_exchange_weak(expected, desired)
-
-    def __del__(self):
-        if self.shm_manager:
-            self.shm_manager.shutdown()
