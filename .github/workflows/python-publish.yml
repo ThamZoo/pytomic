@@ -18,22 +18,18 @@ permissions:
 jobs:
   deploy:
     container: 
-      image: quay.io/pypa/manylinux2010_x86_64
+      image: quay.io/pypa/manylinux2014_x86_64
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Python
-      uses: actions/setup-python@v3
-      with:
-        python-version: '3.9'
     - name: Install dependencies
       run: |
         /opt/python/cp39-cp39/bin/python -m pip install build twine
     - name: Build package
       run: |
         /opt/python/cp39-cp39/bin/python -m build --sdist --wheel
-        auditwheel repair --plat manylinux2010_x86_64 dist/*.whl
+        auditwheel repair --plat manylinux2014_x86_64 dist/*.whl
     - name: Publish package
       env:
         TWINE_USERNAME: __token__
